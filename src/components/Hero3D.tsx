@@ -1,6 +1,6 @@
 import { Suspense, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, PerspectiveCamera, Environment, Float, Text3D, Center } from "@react-three/drei";
+import { OrbitControls, PerspectiveCamera, Environment, Float } from "@react-three/drei";
 import { Button } from "./ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -74,23 +74,16 @@ function EventElements() {
       <FloatingDecoration position={[-3, 1.5, -1.5]} />
       <FloatingDecoration position={[1.5, -2.5, 1]} />
       
-      {/* Central floating text */}
+      {/* Central floating element */}
       <Float speed={1} rotationIntensity={0.1} floatIntensity={0.2}>
-        <Center>
-          <Text3D
-            font="/fonts/Dancing_Script_Bold.json"
-            size={0.5}
-            height={0.1}
-            position={[0, 0.5, 0]}
-          >
-            Events
-            <meshStandardMaterial 
-              color="#8B4513" 
-              metalness={0.3}
-              roughness={0.4}
-            />
-          </Text3D>
-        </Center>
+        <mesh position={[0, 0.5, 0]}>
+          <boxGeometry args={[1, 0.3, 0.1]} />
+          <meshStandardMaterial 
+            color="#8B4513" 
+            metalness={0.3}
+            roughness={0.4}
+          />
+        </mesh>
       </Float>
     </>
   );
