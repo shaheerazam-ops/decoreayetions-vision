@@ -14,6 +14,25 @@ import {
   ArrowRight
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { motion, Variants } from "framer-motion";
+
+// Framer Motion variants
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: { 
+    opacity: 1,
+    transition: { staggerChildren: 0.2 }
+  }
+};
+
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.8, ease: ["easeOut"] } // TS-safe
+  }
+};
 
 const Portfolio = () => {
   const [activeFilter, setActiveFilter] = useState("all");
@@ -85,26 +104,29 @@ const Portfolio = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      
+
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-gradient-hero">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="mb-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="mb-6"
+          >
             <Camera className="w-12 h-12 text-luxury mx-auto mb-4 animate-pulse" />
             <h1 className="elegant-text text-5xl md:text-6xl lg:text-7xl text-primary mb-4 font-light">
               Our Portfolio
             </h1>
             <div className="h-1 w-24 bg-luxury mx-auto mb-6"></div>
-          </div>
-          
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Discover the magic we create through our carefully curated collection of 
-            unforgettable events and celebrations.
-          </p>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Discover the magic we create through our carefully curated collection of unforgettable events and celebrations.
+            </p>
+          </motion.div>
         </div>
       </section>
 
-      {/* Filter Navigation */}
+      {/* Filters */}
       <section className="py-12 border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap justify-center gap-4">
@@ -130,51 +152,50 @@ const Portfolio = () => {
       {/* Portfolio Grid */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
             {filteredItems.map((item) => (
-              <Card 
-                key={item.id} 
-                className="group overflow-hidden hover:shadow-luxury transition-elegant border-border/50 hover:border-luxury/30 bg-card/50 backdrop-blur-sm"
+              <motion.div
+                key={item.id}
+                variants={cardVariants}
+                whileHover={{ scale: 1.05, boxShadow: "0 10px 25px rgba(212,175,55,0.3)" }}
+                className="group cursor-pointer"
               >
-                <div className="aspect-[4/3] overflow-hidden bg-gradient-warm">
-                  <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                <Card className="overflow-hidden bg-card/50 backdrop-blur-sm border-border/50 shadow-lg transition-transform duration-300">
+                  <div className="aspect-[4/3] overflow-hidden bg-gradient-warm flex items-center justify-center text-muted-foreground">
                     <Camera size={48} />
                   </div>
-                </div>
-                
-                <CardContent className="p-6">
-                  <h3 className="elegant-text text-xl text-primary mb-2 group-hover:text-luxury transition-smooth">
-                    {item.title}
-                  </h3>
-                  
-                  <p className="text-muted-foreground mb-4 leading-relaxed">
-                    {item.description}
-                  </p>
-                  
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {item.tags.map((tag, index) => (
-                      <Badge 
-                        key={index} 
-                        variant="secondary" 
-                        className="bg-accent text-accent-foreground text-xs"
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                  
-                  <Button 
-                    variant="ghost" 
-                    className="w-full justify-between text-luxury hover:text-luxury-foreground hover:bg-luxury group transition-elegant"
-                  >
-                    View Details
-                    <ArrowRight size={16} className="group-hover:translate-x-1 transition-smooth" />
-                  </Button>
-                </CardContent>
-              </Card>
+                  <CardContent className="p-6 text-center">
+                    <h3 className="elegant-text text-xl text-primary mb-2 group-hover:text-luxury transition-colors">
+                      {item.title}
+                    </h3>
+                    <p className="text-muted-foreground mb-4 leading-relaxed">
+                      {item.description}
+                    </p>
+                    <div className="flex flex-wrap gap-2 mb-4 justify-center">
+                      {item.tags.map((tag, index) => (
+                        <Badge key={index} variant="secondary" className="bg-accent text-accent-foreground text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      className="w-full justify-between text-luxury hover:text-luxury-foreground hover:bg-luxury group transition-all"
+                    >
+                      View Details <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
-          </div>
-          
+          </motion.div>
+
           {filteredItems.length === 0 && (
             <div className="text-center py-20">
               <Sparkles className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
@@ -203,9 +224,7 @@ const Portfolio = () => {
               variant="secondary"
               className="bg-background text-primary hover:bg-background/90 shadow-elegant text-lg px-8 py-6"
             >
-              <Link to="/contact">
-                Start Planning Today
-              </Link>
+              <Link to="/contact">Start Planning Today</Link>
             </Button>
             
             <Button 
@@ -214,9 +233,7 @@ const Portfolio = () => {
               size="lg"
               className="border-background text-background hover:bg-background hover:text-primary text-lg px-8 py-6"
             >
-              <Link to="/services">
-                Explore Services
-              </Link>
+              <Link to="/services">Explore Services</Link>
             </Button>
           </div>
         </div>

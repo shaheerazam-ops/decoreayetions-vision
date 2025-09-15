@@ -12,6 +12,7 @@ import {
   ArrowRight,
   Star
 } from "lucide-react";
+import { motion } from "framer-motion";  // ✅ Framer Motion import
 
 const Services = () => {
   const services = [
@@ -66,18 +67,37 @@ const Services = () => {
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-gradient-hero">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="mb-6 animate-in slide-in-from-top-8 duration-1000 ease-out">
-            <Star className="w-12 h-12 text-luxury mx-auto mb-4 animate-enhanced-pulse animate-in zoom-in duration-800 delay-200" />
-            <h1 className="elegant-text text-5xl md:text-6xl lg:text-7xl text-primary mb-4 font-light animate-in slide-in-from-left-8 duration-1000 delay-400">
+          <motion.div
+            initial={{ opacity: 0, y: -40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <Star className="w-12 h-12 text-luxury mx-auto mb-4" />
+            <motion.h1 
+              className="elegant-text text-5xl md:text-6xl lg:text-7xl text-primary mb-4 font-light"
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            >
               Our Services
-            </h1>
-            <div className="h-1 w-24 bg-luxury mx-auto mb-6 animate-in fade-in duration-800 delay-600"></div>
-          </div>
-          
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed animate-in slide-in-from-bottom-8 duration-1000 delay-800 ease-out">
+            </motion.h1>
+            <motion.div 
+              className="h-1 w-24 bg-luxury mx-auto mb-6"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+            />
+          </motion.div>
+
+          <motion.p 
+            className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.7 }}
+          >
             From intimate gatherings to grand celebrations, we create extraordinary experiences 
             that exceed expectations and create lasting memories.
-          </p>
+          </motion.p>
         </div>
       </section>
 
@@ -86,48 +106,51 @@ const Services = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
-              <Card 
-                key={index} 
-                className="group card-hover gpu-accelerate border-border/50 hover:border-luxury/30 bg-card/50 backdrop-blur-sm animate-in slide-in-from-bottom-8 duration-1000"
-                style={{ 
-                  animationDelay: `${index * 150}ms`,
-                  animationTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)'
-                }}
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.2 }}
+                viewport={{ once: true }}
               >
-                <CardHeader className="text-center pb-4">
-                  <div className="flex justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 ease-out">
-                    {service.icon}
-                  </div>
-                  <CardTitle className="elegant-text text-2xl text-primary group-hover:text-luxury transition-all duration-300 ease-out">
-                    {service.title}
-                  </CardTitle>
-                </CardHeader>
-                
-                <CardContent className="text-center">
-                  <p className="text-muted-foreground mb-6 leading-relaxed">
-                    {service.description}
-                  </p>
+                <Card 
+                  className="group card-hover border-border/50 hover:border-luxury/30 bg-card/50 backdrop-blur-sm transition-all hover:shadow-xl"
+                >
+                  <CardHeader className="text-center pb-4">
+                    <div className="flex justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 ease-out">
+                      {service.icon}
+                    </div>
+                    <CardTitle className="elegant-text text-2xl text-primary group-hover:text-luxury transition-all duration-300 ease-out">
+                      {service.title}
+                    </CardTitle>
+                  </CardHeader>
                   
-                  <div className="space-y-2 mb-6">
-                    {service.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center justify-center text-sm text-foreground">
-                        <div className="w-1.5 h-1.5 bg-luxury rounded-full mr-2"></div>
-                        {feature}
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <Button 
-                    asChild 
-                    className="w-full bg-luxury text-luxury-foreground hover:bg-luxury/90 transition-spring button-press hover-lift"
-                  >
-                    <Link to={service.link} className="flex items-center justify-center gap-2 transition-smooth">
-                      <span className="transition-spring">Learn More</span>
-                      <ArrowRight size={16} className="group-hover:translate-x-2 group-hover:scale-110 transition-spring" />
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
+                  <CardContent className="text-center">
+                    <p className="text-muted-foreground mb-6 leading-relaxed">
+                      {service.description}
+                    </p>
+                    
+                    <div className="space-y-2 mb-6">
+                      {service.features.map((feature, idx) => (
+                        <div key={idx} className="flex items-center justify-center text-sm text-foreground">
+                          <div className="w-1.5 h-1.5 bg-luxury rounded-full mr-2"></div>
+                          {feature}
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <Button 
+                      asChild 
+                      className="w-full bg-luxury text-luxury-foreground hover:bg-luxury/90 transition-transform hover:scale-105"
+                    >
+                      <Link to={service.link} className="flex items-center justify-center gap-2">
+                        <span>Learn More</span>
+                        <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -135,24 +158,28 @@ const Services = () => {
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-luxury">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="elegant-text text-4xl md:text-5xl text-luxury-foreground mb-6 animate-in slide-in-from-top-8 duration-1000 ease-out">
+        <motion.div 
+          className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="elegant-text text-4xl md:text-5xl text-luxury-foreground mb-6">
             Ready to Plan Your Dream Event?
           </h2>
-          <p className="text-xl text-luxury-foreground/90 mb-8 max-w-2xl mx-auto animate-in slide-in-from-bottom-8 duration-1000 delay-300 ease-out">
+          <p className="text-xl text-luxury-foreground/90 mb-8 max-w-2xl mx-auto">
             Let's bring your vision to life with our expert planning and exquisite attention to detail.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-in slide-in-from-bottom-8 duration-1000 delay-600 ease-out">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               asChild
               size="lg" 
               variant="secondary"
               className="bg-background text-primary hover:bg-background/90 shadow-elegant text-lg px-8 py-6"
             >
-              <Link to="/contact">
-                Get Free Consultation
-              </Link>
+              <Link to="/contact">Get Free Consultation</Link>
             </Button>
             
             <Button 
@@ -161,12 +188,10 @@ const Services = () => {
               size="lg"
               className="border-background text-background hover:bg-background hover:text-primary text-lg px-8 py-6"
             >
-              <Link to="/portfolio">
-                View Our Work
-              </Link>
+              <Link to="/portfolio">View Our Work</Link>
             </Button>
           </div>
-        </div>
+        </motion.div>
       </section>
     </div>
   );
