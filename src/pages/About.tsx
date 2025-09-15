@@ -55,7 +55,7 @@ const About = () => {
             <h1 className="elegant-text text-5xl md:text-6xl lg:text-7xl text-primary mb-4 font-light">
               About Us
             </h1>
-            <div className="h-1 w-24 bg-luxury mx-auto mb-6"></div>
+            <div className="h-1 w-24 bg-gradient-to-r from-luxury via-yellow-400 to-luxury rounded-full mx-auto mb-6"></div>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Creating extraordinary moments through passionate planning and exquisite design
             </p>
@@ -77,11 +77,11 @@ const About = () => {
               <h2 className="elegant-text text-4xl md:text-5xl text-primary mb-6">
                 Our Story
               </h2>
-              <div className="h-1 w-16 bg-luxury mb-6"></div>
+              <div className="h-1 w-16 bg-gradient-to-r from-luxury via-yellow-400 to-luxury rounded-full mb-6"></div>
               
               <div className="space-y-6 text-muted-foreground leading-relaxed">
                 <p>
-                  Founded with a passion for creating unforgettable moments, DECOREAYETIONS began as a dream 
+                  Founded with a passion for creating unforgettable moments, DECORAYETIONS began as a dream 
                   to transform ordinary celebrations into extraordinary experiences. We believe that every 
                   event tells a story, and we're here to help you tell yours beautifully.
                 </p>
@@ -103,7 +103,7 @@ const About = () => {
               <Button 
                 asChild
                 size="lg" 
-                className="mt-8 bg-luxury text-luxury-foreground hover:bg-luxury/90 shadow-luxury"
+                className="mt-8 bg-luxury text-luxury-foreground hover:bg-luxury/90 shadow-lg transition-transform transform hover:scale-105"
               >
                 <Link to="/portfolio" className="flex items-center gap-2">
                   See Our Work
@@ -115,39 +115,28 @@ const About = () => {
         </div>
       </section>
 
-      {/* Values Section */}
-      <section className="py-20 bg-gradient-warm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="elegant-text text-4xl md:text-5xl text-primary mb-6">
-              Our Values
-            </h2>
-            <div className="h-1 w-24 bg-luxury mx-auto mb-6"></div>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              The principles that guide us in creating exceptional experiences for every client
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((value, index) => (
-              <Card 
-                key={index} 
-                className="text-center hover:shadow-luxury transition-elegant border-border/50 hover:border-luxury/30 bg-card/70 backdrop-blur-sm"
-              >
-                <CardContent className="p-8">
-                  <div className="flex justify-center mb-4 group-hover:scale-110 transition-smooth">
-                    {value.icon}
-                  </div>
-                  <h3 className="elegant-text text-xl text-primary mb-4">
-                    {value.title}
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {value.description}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+      {/* Luxury Divider */}
+      <div className="h-1 w-40 bg-gradient-to-r from-luxury via-yellow-400 to-luxury mx-auto my-20 rounded-full shadow-lg shadow-yellow-400/20"></div>
+
+      {/* Photo Collage Section */}
+      <section className="py-20 bg-muted/40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-12">
+          <h2 className="elegant-text text-4xl md:text-5xl text-primary mb-6">
+            Moments We Cherish
+          </h2>
+          <div className="h-1 w-24 bg-gradient-to-r from-luxury via-yellow-400 to-luxury mx-auto mb-6 rounded-full"></div>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            A glimpse into the beautiful events we’ve had the honor of creating.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <img src="https://source.unsplash.com/600x600/?wedding,decor" alt="Event 1" className="rounded-xl object-cover w-full h-full hover:scale-105 transition-transform shadow-md" />
+          <img src="https://source.unsplash.com/600x600/?event,celebration" alt="Event 2" className="rounded-xl object-cover w-full h-full hover:scale-105 transition-transform shadow-md" />
+          <img src="https://source.unsplash.com/600x600/?flowers,luxury" alt="Event 3" className="rounded-xl object-cover w-full h-full hover:scale-105 transition-transform shadow-md" />
+          <img src="https://source.unsplash.com/600x600/?stage,lights" alt="Event 4" className="rounded-xl object-cover w-full h-full hover:scale-105 transition-transform shadow-md" />
+          <img src="https://source.unsplash.com/600x600/?banquet,party" alt="Event 5" className="rounded-xl object-cover w-full h-full hover:scale-105 transition-transform shadow-md" />
+          <img src="https://source.unsplash.com/600x600/?luxury,event" alt="Event 6" className="rounded-xl object-cover w-full h-full hover:scale-105 transition-transform shadow-md" />
         </div>
       </section>
 
@@ -158,7 +147,7 @@ const About = () => {
             <h2 className="elegant-text text-4xl md:text-5xl text-primary mb-6">
               Our Impact
             </h2>
-            <div className="h-1 w-24 bg-luxury mx-auto mb-6"></div>
+            <div className="h-1 w-24 bg-gradient-to-r from-luxury via-yellow-400 to-luxury mx-auto mb-6 rounded-full"></div>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Numbers that reflect our commitment to excellence and client satisfaction
             </p>
@@ -182,13 +171,17 @@ const About = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-luxury">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="elegant-text text-4xl md:text-5xl text-luxury-foreground mb-6">
+      {/* CTA Section with Background Image */}
+      <section 
+        className="relative py-32 bg-cover bg-center"
+        style={{ backgroundImage: "url('https://source.unsplash.com/1600x900/?luxury,wedding')" }}
+      >
+        <div className="absolute inset-0 bg-black/60"></div>
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+          <h2 className="elegant-text text-4xl md:text-5xl mb-6">
             Let's Create Something Beautiful Together
           </h2>
-          <p className="text-xl text-luxury-foreground/90 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl mb-8 max-w-2xl mx-auto">
             Ready to transform your special moment into an unforgettable experience? 
             We'd love to hear about your vision and help bring it to life.
           </p>
@@ -198,7 +191,7 @@ const About = () => {
               asChild
               size="lg" 
               variant="secondary"
-              className="bg-background text-primary hover:bg-background/90 shadow-elegant text-lg px-8 py-6"
+              className="bg-luxury text-luxury-foreground hover:bg-luxury/90 shadow-lg text-lg px-8 py-6 transition-transform transform hover:scale-105"
             >
               <Link to="/contact">
                 Start Your Journey
@@ -209,7 +202,7 @@ const About = () => {
               asChild
               variant="outline" 
               size="lg"
-              className="border-background text-background hover:bg-background hover:text-primary text-lg px-8 py-6"
+              className="border-white text-white hover:bg-white hover:text-primary text-lg px-8 py-6 transition-transform transform hover:scale-105"
             >
               <Link to="/services">
                 Our Services

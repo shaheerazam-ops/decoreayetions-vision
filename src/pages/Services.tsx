@@ -66,15 +66,15 @@ const Services = () => {
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-gradient-hero">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="mb-6">
-            <Star className="w-12 h-12 text-luxury mx-auto mb-4 animate-pulse" />
-            <h1 className="elegant-text text-5xl md:text-6xl lg:text-7xl text-primary mb-4 font-light">
+          <div className="mb-6 animate-in slide-in-from-top-8 duration-1000 ease-out">
+            <Star className="w-12 h-12 text-luxury mx-auto mb-4 animate-enhanced-pulse animate-in zoom-in duration-800 delay-200" />
+            <h1 className="elegant-text text-5xl md:text-6xl lg:text-7xl text-primary mb-4 font-light animate-in slide-in-from-left-8 duration-1000 delay-400">
               Our Services
             </h1>
-            <div className="h-1 w-24 bg-luxury mx-auto mb-6"></div>
+            <div className="h-1 w-24 bg-luxury mx-auto mb-6 animate-in fade-in duration-800 delay-600"></div>
           </div>
           
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed animate-in slide-in-from-bottom-8 duration-1000 delay-800 ease-out">
             From intimate gatherings to grand celebrations, we create extraordinary experiences 
             that exceed expectations and create lasting memories.
           </p>
@@ -88,13 +88,17 @@ const Services = () => {
             {services.map((service, index) => (
               <Card 
                 key={index} 
-                className="group hover:shadow-luxury transition-elegant border-border/50 hover:border-luxury/30 bg-card/50 backdrop-blur-sm"
+                className="group card-hover gpu-accelerate border-border/50 hover:border-luxury/30 bg-card/50 backdrop-blur-sm animate-in slide-in-from-bottom-8 duration-1000"
+                style={{ 
+                  animationDelay: `${index * 150}ms`,
+                  animationTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)'
+                }}
               >
                 <CardHeader className="text-center pb-4">
-                  <div className="flex justify-center mb-4 group-hover:scale-110 transition-smooth">
+                  <div className="flex justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 ease-out">
                     {service.icon}
                   </div>
-                  <CardTitle className="elegant-text text-2xl text-primary group-hover:text-luxury transition-smooth">
+                  <CardTitle className="elegant-text text-2xl text-primary group-hover:text-luxury transition-all duration-300 ease-out">
                     {service.title}
                   </CardTitle>
                 </CardHeader>
@@ -115,11 +119,11 @@ const Services = () => {
                   
                   <Button 
                     asChild 
-                    className="w-full bg-luxury text-luxury-foreground hover:bg-luxury/90 transition-elegant group"
+                    className="w-full bg-luxury text-luxury-foreground hover:bg-luxury/90 transition-spring button-press hover-lift"
                   >
-                    <Link to={service.link} className="flex items-center justify-center gap-2">
-                      Learn More
-                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-smooth" />
+                    <Link to={service.link} className="flex items-center justify-center gap-2 transition-smooth">
+                      <span className="transition-spring">Learn More</span>
+                      <ArrowRight size={16} className="group-hover:translate-x-2 group-hover:scale-110 transition-spring" />
                     </Link>
                   </Button>
                 </CardContent>
@@ -132,14 +136,14 @@ const Services = () => {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-luxury">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="elegant-text text-4xl md:text-5xl text-luxury-foreground mb-6">
+          <h2 className="elegant-text text-4xl md:text-5xl text-luxury-foreground mb-6 animate-in slide-in-from-top-8 duration-1000 ease-out">
             Ready to Plan Your Dream Event?
           </h2>
-          <p className="text-xl text-luxury-foreground/90 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-luxury-foreground/90 mb-8 max-w-2xl mx-auto animate-in slide-in-from-bottom-8 duration-1000 delay-300 ease-out">
             Let's bring your vision to life with our expert planning and exquisite attention to detail.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-in slide-in-from-bottom-8 duration-1000 delay-600 ease-out">
             <Button 
               asChild
               size="lg" 

@@ -21,20 +21,12 @@ const Navigation = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/98 backdrop-blur-sm shadow-sm border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Top section with social links */}
-        <div className="flex justify-center py-2 border-b border-gray-50">
-          <div className="flex items-center space-x-4 text-sm text-gray-600">
-            <a href="#" className="hover:text-gray-900 transition-colors">Instagram</a>
-            <a href="#" className="hover:text-gray-900 transition-colors">Facebook</a>
-          </div>
-        </div>
-        
         {/* Main navigation */}
         <div className="flex flex-col items-center py-4 relative">
           {/* Logo centered */}
           <Link to="/" className="mb-4">
             <h1 className="brand-title text-4xl lg:text-5xl text-gray-900 hover:text-gray-700 transition-colors text-center">
-              DECOREAYETIONS
+            DECORAYETIONS
             </h1>
           </Link>
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Instagram, Facebook } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 
@@ -9,7 +9,7 @@ const HeroSlider = () => {
   const heroImages = [
     {
       url: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80",
-      title: "Welcome to DECOREAYETIONS!",
+      title: "Welcome to DECORAYETIONS!",
       subtitle: "A full service event planning & production company!",
     },
     {
@@ -28,7 +28,7 @@ const HeroSlider = () => {
       subtitle: "Birthdays, anniversaries, and milestone moments",
     },
     {
-      url: "https://images.unsplash.com/photo-1511795409834-432f7b94aeb3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80",
+      url: "https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=1200&q=80",
       title: "Luxury Events",
       subtitle: "Sophisticated design and flawless execution",
     },
@@ -37,8 +37,7 @@ const HeroSlider = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroImages.length);
-    }, 5000); // Auto-advance every 5 seconds
-
+    }, 5000);
     return () => clearInterval(timer);
   }, [heroImages.length]);
 
@@ -53,7 +52,7 @@ const HeroSlider = () => {
   return (
     <section className="relative h-screen w-full overflow-hidden">
       {/* Image Slider */}
-      <div className="relative w-full h-full">
+      <div className="relative w-full h-full pointer-events-none">
         {heroImages.map((image, index) => (
           <div
             key={index}
@@ -75,19 +74,19 @@ const HeroSlider = () => {
       {/* Navigation Arrows */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-white/20 hover:bg-white/40 transition-transform transform hover:scale-110 pointer-events-auto"
       >
         <ChevronLeft className="w-6 h-6 text-white" />
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-white/20 hover:bg-white/40 transition-transform transform hover:scale-110 pointer-events-auto"
       >
         <ChevronRight className="w-6 h-6 text-white" />
       </button>
 
       {/* Slide Indicators */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex space-x-2">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-50 flex space-x-2 pointer-events-auto">
         {heroImages.map((_, index) => (
           <button
             key={index}
@@ -100,9 +99,9 @@ const HeroSlider = () => {
       </div>
 
       {/* Content Overlay */}
-      <div className="absolute inset-0 flex items-center justify-center z-10">
-        <div className="text-center max-w-4xl mx-auto px-4">
-          <h1 className="text-4xl md:text-6xl font-light text-white mb-6 elegant-text">
+      <div className="absolute inset-0 flex items-center justify-center z-40 pointer-events-none">
+        <div className="text-center max-w-4xl mx-auto px-4 pointer-events-auto">
+          <h1 className="text-4xl md:text-6xl font-light text-white mb-6">
             {heroImages[currentSlide].title}
           </h1>
           <p className="text-xl md:text-2xl text-white/90 mb-8 font-light">
@@ -112,7 +111,7 @@ const HeroSlider = () => {
             <Button
               asChild
               size="lg"
-              className="bg-white text-gray-900 hover:bg-gray-100 px-8 py-3"
+              className="bg-white text-gray-900 hover:bg-gray-100 px-8 py-3 transition-transform transform hover:scale-105"
             >
               <Link to="/services">Our Services</Link>
             </Button>
@@ -120,10 +119,30 @@ const HeroSlider = () => {
               asChild
               variant="outline"
               size="lg"
-              className="border-white text-white hover:bg-white hover:text-gray-900 px-8 py-3"
+              className="border-white text-white hover:bg-white hover:text-gray-900 px-8 py-3 transition-transform transform hover:scale-105"
             >
               <Link to="/portfolio">View Portfolio</Link>
             </Button>
+          </div>
+
+          {/* Social Icons */}
+          <div className="flex space-x-6 justify-center mt-8">
+            <a
+              href="https://www.instagram.com/decorayetions"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-pink-500 transition-transform transform hover:scale-110"
+            >
+              <Instagram className="w-7 h-7 text-white" />
+            </a>
+            <a
+              href="https://www.facebook.com/301138853074599"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-blue-500 transition-transform transform hover:scale-110"
+            >
+              <Facebook className="w-7 h-7 text-white" />
+            </a>
           </div>
         </div>
       </div>

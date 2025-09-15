@@ -31,7 +31,7 @@ const Index = () => {
             {/* About Button */}
             <Link to="/about" className="group relative aspect-square overflow-hidden rounded-lg">
               <img
-                src="https://images.unsplash.com/photo-1511795409834-432f7b94aeb3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                src="https://images.unsplash.com/photo-1525182008055-f88b95ff7980?"
                 alt="About Us"
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
