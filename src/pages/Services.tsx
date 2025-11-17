@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
+import PageHero from "@/components/PageHero";
 import { 
   Heart, 
   Cake, 
@@ -64,42 +65,12 @@ const Services = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-hero">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: -40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <Star className="w-12 h-12 text-luxury mx-auto mb-4" />
-            <motion.h1 
-              className="elegant-text text-5xl md:text-6xl lg:text-7xl text-primary mb-4 font-light"
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-            >
-              Our Services
-            </motion.h1>
-            <motion.div 
-              className="h-1 w-24 bg-luxury mx-auto mb-6"
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-            />
-          </motion.div>
-
-          <motion.p 
-            className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-          >
-            From intimate gatherings to grand celebrations, we create extraordinary experiences 
-            that exceed expectations and create lasting memories.
-          </motion.p>
-        </div>
-      </section>
+      <PageHero
+        title="Our Services"
+        subtitle="From intimate gatherings to grand celebrations, we create extraordinary experiences that exceed expectations and create lasting memories."
+        imageUrl="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1600&q=80"
+        icon={<Star className="w-12 h-12 text-luxury animate-pulse" />}
+      />
 
       {/* Services Grid */}
       <section className="py-20">

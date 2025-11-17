@@ -14,7 +14,58 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      orders: {
+        Row: {
+          id: string
+          created_at: string
+          user_id: string
+          name: string
+          email: string
+          phone: string | null
+          event_type: string
+          event_date: string | null
+          guests: string | null
+          budget: string | null
+          message: string
+          status: string | null
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          user_id: string
+          name: string
+          email: string
+          phone?: string | null
+          event_type: string
+          event_date?: string | null
+          guests?: string | null
+          budget?: string | null
+          message: string
+          status?: string | null
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          user_id?: string
+          name?: string
+          email?: string
+          phone?: string | null
+          event_type?: string
+          event_date?: string | null
+          guests?: string | null
+          budget?: string | null
+          message?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never

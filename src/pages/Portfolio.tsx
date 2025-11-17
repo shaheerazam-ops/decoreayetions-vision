@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion, Variants } from "framer-motion";
+import PageHero from "@/components/PageHero";
 
 // Framer Motion variants
 const containerVariants: Variants = {
@@ -105,26 +106,12 @@ const Portfolio = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-hero">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="mb-6"
-          >
-            <Camera className="w-12 h-12 text-luxury mx-auto mb-4 animate-pulse" />
-            <h1 className="elegant-text text-5xl md:text-6xl lg:text-7xl text-primary mb-4 font-light">
-              Our Portfolio
-            </h1>
-            <div className="h-1 w-24 bg-luxury mx-auto mb-6"></div>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Discover the magic we create through our carefully curated collection of unforgettable events and celebrations.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PageHero
+        title="Our Portfolio"
+        subtitle="Discover the magic we create through our carefully curated collection of unforgettable events and celebrations."
+        imageUrl="https://images.unsplash.com/photo-1455849318743-b2233052fcff?auto=format&fit=crop&w=1600&q=80"
+        icon={<Camera className="w-12 h-12 text-luxury animate-pulse" />}
+      />
 
       {/* Filters */}
       <section className="py-12 border-b border-border">
