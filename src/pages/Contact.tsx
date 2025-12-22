@@ -33,6 +33,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { placeOrder, sendOrderConfirmation } from "@/lib/orders";
 
 const Contact = () => {
   const { toast } = useToast();
@@ -72,8 +73,8 @@ const Contact = () => {
 
     setIsSubmitting(true);
 
-    const { error } = await supabase.from("orders").insert([
-      {
+    try {
+      const newOrder = await placeOrder({
         user_id: user.id,
         name: formData.name,
         email: formData.email,
@@ -83,36 +84,37 @@ const Contact = () => {
         guests: formData.guests || null,
         budget: formData.budget || null,
         message: formData.message,
+      });
+
+      if (user.email) {
+        await sendOrderConfirmation(newOrder.id, user.email);
       }
-    ]);
 
-    setIsSubmitting(false);
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for contacting us. We'll get back to you within 24 hours.",
+      });
 
-    if (error) {
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        eventType: "",
+        eventDate: "",
+        guests: "",
+        budget: "",
+        message: ""
+      });
+    } catch (error: any) {
       console.error("Failed to save order", error);
       toast({
         title: "Something went wrong",
-        description: "We could not save your request. Please try again.",
+        description: error.message ?? "We could not save your request. Please try again.",
         variant: "destructive",
       });
-      return;
+    } finally {
+      setIsSubmitting(false);
     }
-
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for contacting us. We'll get back to you within 24 hours.",
-    });
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      eventType: "",
-      eventDate: "",
-      guests: "",
-      budget: "",
-      message: ""
-    });
   };
 
   const handleChange = (field: string, value: string) => {

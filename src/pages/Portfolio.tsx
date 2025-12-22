@@ -31,7 +31,7 @@ const cardVariants: Variants = {
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.8, ease: ["easeOut"] } // TS-safe
+    transition: { duration: 0.8, ease: "easeOut" }
   }
 };
 
@@ -53,7 +53,7 @@ const Portfolio = () => {
       title: "Elegant Garden Wedding",
       category: "weddings",
       description: "A romantic outdoor celebration with cascading florals and fairy lights",
-      image: "/api/placeholder/600/400",
+      image: "https://plus.unsplash.com/premium_photo-1674065309449-574be96378fe?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8d2VkZGluZ3N8ZW58MHx8MHx8fDA%3D",
       tags: ["Outdoor", "Romantic", "Garden", "200 guests"]
     },
     {
@@ -61,15 +61,15 @@ const Portfolio = () => {
       title: "Sweet 16 Glamour Party", 
       category: "birthdays",
       description: "A sophisticated birthday celebration with gold and pink themes",
-      image: "/api/placeholder/600/400",
-      tags: ["Teen Party", "Glamour", "Gold Theme", "50 guests"]
+      image: "https://i.pinimg.com/originals/b1/20/16/b120169c3d550f6a4e70263a819e05df.jpg",
+      tags: ["Teen Party","Glamour","Gold Theme"]
     },
     {
       id: 3,
       title: "Corporate Gala Dinner",
       category: "corporate", 
       description: "An upscale corporate event showcasing company achievements",
-      image: "/api/placeholder/600/400",
+      image: "https://i.pinimg.com/originals/b1/20/16/b120169c3d550f6a4e70263a819e05df.jpg",
       tags: ["Formal", "Awards", "Networking", "300 guests"]
     },
     {
@@ -77,7 +77,7 @@ const Portfolio = () => {
       title: "Boho Chic Bridal Shower",
       category: "bridal",
       description: "A whimsical bridal shower with pampas grass and earth tones",
-      image: "/api/placeholder/600/400",
+      image: "https://i.pinimg.com/originals/b1/20/16/b120169c3d550f6a4e70263a819e05df.jpg",
       tags: ["Boho", "Brunch", "Outdoor", "25 guests"]
     },
     {
@@ -85,8 +85,8 @@ const Portfolio = () => {
       title: "Golden Anniversary Celebration",
       category: "anniversaries",
       description: "50 years of love celebrated with family and friends",
-      image: "/api/placeholder/600/400",
-      tags: ["Anniversary", "Family", "Gold Theme", "80 guests"]
+      image: "https://i.pinimg.com/originals/b1/20/16/b120169c3d550f6a4e70263a819e05df.jpg",
+      tags: ["Anniversary", "Family", "Gold Theme"]
     },
     {
       id: 6,
@@ -98,9 +98,12 @@ const Portfolio = () => {
     }
   ];
 
-  const filteredItems = activeFilter === "all" 
-    ? portfolioItems 
-    : portfolioItems.filter(item => item.category === activeFilter);
+  const filteredItems =
+    activeFilter === "all"
+      ? portfolioItems
+      : portfolioItems.filter(item =>
+          item.category.toLowerCase() === activeFilter.toLowerCase()
+        );
 
   return (
     <div className="min-h-screen bg-background">
@@ -140,16 +143,18 @@ const Portfolio = () => {
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
+            key={activeFilter}
             variants={containerVariants}
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
+            animate="visible"
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {filteredItems.map((item) => (
               <motion.div
                 key={item.id}
                 variants={cardVariants}
+                initial="hidden"
+                animate="visible"
                 whileHover={{ scale: 1.05, boxShadow: "0 10px 25px rgba(212,175,55,0.3)" }}
                 className="group cursor-pointer"
               >
@@ -172,8 +177,8 @@ const Portfolio = () => {
                       ))}
                     </div>
                     <Button 
-                      variant="ghost" 
-                      className="w-full justify-between text-luxury hover:text-luxury-foreground hover:bg-luxury group transition-all"
+                      variant="outline" 
+                      className="w-full justify-between text-black hover:text-luxury-foreground hover:bg-luxury group transition-all"
                     >
                       View Details <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                     </Button>
@@ -191,38 +196,6 @@ const Portfolio = () => {
               </p>
             </div>
           )}
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-luxury">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="elegant-text text-4xl md:text-5xl text-luxury-foreground mb-6">
-            Ready to Create Your Own Masterpiece?
-          </h2>
-          <p className="text-xl text-luxury-foreground/90 mb-8 max-w-2xl mx-auto">
-            Let us bring your vision to life and create an event that will be remembered forever.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              asChild
-              size="lg" 
-              variant="secondary"
-              className="bg-background text-primary hover:bg-background/90 shadow-elegant text-lg px-8 py-6"
-            >
-              <Link to="/contact">Start Planning Today</Link>
-            </Button>
-            
-            <Button 
-              asChild
-              variant="outline" 
-              size="lg"
-              className="border-background text-background hover:bg-background hover:text-primary text-lg px-8 py-6"
-            >
-              <Link to="/services">Explore Services</Link>
-            </Button>
-          </div>
         </div>
       </section>
     </div>

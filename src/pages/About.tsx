@@ -126,9 +126,10 @@ const About = () => {
         <Link to="/contact">
           <Button 
             size="lg" 
-            className="bg-luxury hover:bg-luxury/90 transition-transform transform hover:scale-105 hover:shadow-xl"
+            className="bg-luxury text-black font-semibold hover:bg-luxury/90 transition-all hover:scale-105 hover:shadow-xl"
           >
-            Start Planning <ArrowRight className="ml-2 w-5 h-5" />
+            Start Planning 
+            <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
         </Link>
       </motion.section>
@@ -137,3 +138,4 @@ const About = () => {
 };
 
 export default About;
+

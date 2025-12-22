@@ -157,7 +157,7 @@ const Services = () => {
               asChild
               variant="outline" 
               size="lg"
-              className="border-background text-background hover:bg-background hover:text-primary text-lg px-8 py-6"
+              className="bg-background text-primary hover:bg-background/90 shadow-elegant text-lg px-8 py-6"
             >
               <Link to="/portfolio">View Our Work</Link>
             </Button>

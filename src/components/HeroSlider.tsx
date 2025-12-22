@@ -119,7 +119,7 @@ const HeroSlider = () => {
               asChild
               variant="outline"
               size="lg"
-              className="border-white text-white hover:bg-white hover:text-gray-900 px-8 py-3 transition-transform transform hover:scale-105"
+              className="bg-white text-gray-900 hover:bg-gray-100 px-8 py-3 transition-transform transform hover:scale-105"
             >
               <Link to="/portfolio">View Portfolio</Link>
             </Button>

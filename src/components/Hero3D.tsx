@@ -226,8 +226,8 @@ const Hero3D = () => {
 
           {/* Caption */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.8 }}
+            initial={{ opacity: 0.5 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 1.5, delay: 2 }}
             className="mt-12 text-sm text-muted-foreground"
           >
