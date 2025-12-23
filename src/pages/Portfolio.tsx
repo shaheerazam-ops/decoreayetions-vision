@@ -61,7 +61,7 @@ const Portfolio = () => {
       title: "Elegant Garden Wedding",
       category: "weddings",
       description: "A romantic outdoor celebration with cascading florals and fairy lights",
-      image: "https://plus.unsplash.com/premium_photo-1674065309449-574be96378fe?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8d2VkZGluZ3N8ZW58MHx8MHx8fDA%3D",
+      image: "https://i.pinimg.com/736x/cf/79/a5/cf79a55d1e93acbbd22114bfa21ed071.jpg",
       tags: ["Outdoor", "Romantic", "Garden", "200 guests"]
     },
     {
@@ -69,7 +69,7 @@ const Portfolio = () => {
       title: "Sweet 16 Glamour Party", 
       category: "birthdays",
       description: "A sophisticated birthday celebration with gold and pink themes",
-      image: "https://i.pinimg.com/originals/b1/20/16/b120169c3d550f6a4e70263a819e05df.jpg",
+      image: "https://i.pinimg.com/736x/aa/11/e3/aa11e338f943f38ef21731fa8489eba4.jpg",
       tags: ["Teen Party","Glamour","Gold Theme"]
     },
     {
@@ -77,7 +77,7 @@ const Portfolio = () => {
       title: "Corporate Gala Dinner",
       category: "corporate", 
       description: "An upscale corporate event showcasing company achievements",
-      image: "https://i.pinimg.com/originals/b1/20/16/b120169c3d550f6a4e70263a819e05df.jpg",
+      image: "https://i.pinimg.com/736x/02/c7/77/02c77725884de83a1699cc04793da780.jpg",
       tags: ["Formal", "Awards", "Networking", "300 guests"]
     },
     {
@@ -85,7 +85,7 @@ const Portfolio = () => {
       title: "Boho Chic Bridal Shower",
       category: "bridal",
       description: "A whimsical bridal shower with pampas grass and earth tones",
-      image: "https://i.pinimg.com/originals/b1/20/16/b120169c3d550f6a4e70263a819e05df.jpg",
+      image: "https://i.pinimg.com/736x/99/28/f4/9928f4227655f93ca7978497943bdab7.jpg",
       tags: ["Boho", "Brunch", "Outdoor", "25 guests"]
     },
     {
@@ -93,7 +93,7 @@ const Portfolio = () => {
       title: "Golden Anniversary Celebration",
       category: "anniversaries",
       description: "50 years of love celebrated with family and friends",
-      image: "https://i.pinimg.com/originals/b1/20/16/b120169c3d550f6a4e70263a819e05df.jpg",
+      image: "https://i.pinimg.com/1200x/79/39/44/79394410b3c2e32e042a100728dfb113.jpg",
       tags: ["Anniversary", "Family", "Gold Theme"]
     },
     {
@@ -101,7 +101,7 @@ const Portfolio = () => {
       title: "Enchanted Forest Wedding",
       category: "weddings", 
       description: "A magical woodland ceremony with natural elements",
-      image: "/api/placeholder/600/400",
+      image: "https://i.pinimg.com/736x/15/36/20/1536200b0df3699300f6fe1c19f39957.jpg",
       tags: ["Forest", "Natural", "Rustic", "150 guests"]
     }
   ];
@@ -167,8 +167,16 @@ const Portfolio = () => {
                 className="group cursor-pointer"
               >
                 <Card className="overflow-hidden bg-card/50 backdrop-blur-sm border-border/50 shadow-lg transition-transform duration-300">
-                  <div className="aspect-[4/3] overflow-hidden bg-gradient-warm flex items-center justify-center text-muted-foreground">
-                    <Camera size={48} />
+                  <div className="aspect-[4/3] relative overflow-hidden bg-gradient-warm">
+                    <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
+                      <Camera size={48} />
+                    </div>
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                    />
                   </div>
                   <CardContent className="p-6 text-center">
                     <h3 className="elegant-text text-xl text-primary mb-2 group-hover:text-luxury transition-colors">
