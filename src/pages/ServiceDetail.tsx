@@ -72,7 +72,11 @@ const ServiceDetail = () => {
             "Basic floral arrangements",
             "Day-of coordination",
             "Timeline creation",
-            "Vendor recommendations"
+            "Vendor recommendations",
+            "Catering management (if required)",
+            "NO Photography services"
+
+
           ]
         },
         {
@@ -142,7 +146,7 @@ const ServiceDetail = () => {
           description: "Sunset beachside vows with natural coastal beauty"
         },
         {
-          url: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+          url: "https://tse1.mm.bing.net/th/id/OIP.8ERlmd0R-PgZMpLJkBDXlQHaE7?rs=1&pid=ImgDetMain&o=7&rm=3",
           title: "Rustic Barn Wedding",
           description: "Charming countryside celebration with vintage décor"
         },
@@ -152,7 +156,7 @@ const ServiceDetail = () => {
           description: "Contemporary urban ceremony with sleek architectural backdrop"
         },
         {
-          url: "https://images.unsplash.com/photo-1470905093326-ad1eaa5c1b63?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+          url: "https://img.freepik.com/premium-photo/classic-cathedral-wedding-with-stained-glass-windows-floral-arrangements_1264082-60212.jpg",
           title: "Classic Cathedral Wedding",
           description: "Traditional ceremony with timeless elegance and grandeur"
         }
@@ -282,7 +286,8 @@ const ServiceDetail = () => {
             "Basic refreshments",
             "Simple decorations",
             "Game coordination",
-            "Gift display setup"
+            "Gift display setup",
+            "Basic Catering services"
           ]
         },
         {
@@ -381,7 +386,8 @@ const ServiceDetail = () => {
             "Basic AV setup",
             "Standard catering",
             "Event timeline",
-            "Professional hosting"
+            "Professional hosting",
+            "Photography services"
           ]
         },
         {
@@ -706,19 +712,19 @@ const ServiceDetail = () => {
               
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div className="p-4 bg-card rounded-lg border border-border/50 card-hover">
-                  <Calendar className="w-6 h-6 text-luxury mx-auto mb-2" />
+                  <Calendar className="w-6 h-6 text-luxury mx-auto mb-2 color-black" />
                   <div className="text-sm font-medium">Flexible Scheduling</div>
                 </div>
                 <div className="p-4 bg-card rounded-lg border border-border/50 card-hover">
-                  <Users className="w-6 h-6 text-luxury mx-auto mb-2" />
+                  <Users className="w-6 h-6 text-luxury mx-auto mb-2 color-black" />
                   <div className="text-sm font-medium">Expert Team</div>
                 </div>
                 <div className="p-4 bg-card rounded-lg border border-border/50 card-hover">
-                  <MapPin className="w-6 h-6 text-luxury mx-auto mb-2" />
+                  <MapPin className="w-6 h-6 text-luxury mx-auto mb-2 color-black" />
                   <div className="text-sm font-medium">Any Location</div>
                 </div>
                 <div className="p-4 bg-card rounded-lg border border-border/50 card-hover">
-                  <Clock className="w-6 h-6 text-luxury mx-auto mb-2" />
+                  <Clock className="w-6 h-6 text-luxury mx-auto mb-2 color-black" />
                   <div className="text-sm font-medium">Full Support</div>
                 </div>
               </div>
@@ -819,7 +825,7 @@ const ServiceDetail = () => {
               asChild
               variant="outline"
               size="lg"
-              className="border-luxury text-luxury hover:bg-luxury hover:text-luxury-foreground transition-spring button-press hover-lift"
+              className="border-luxury text-black hover:bg-luxury hover:text-luxury-foreground transition-spring button-press hover-lift"
             >
               <Link to="/portfolio">
                 View Full Portfolio
@@ -961,7 +967,7 @@ const ServiceDetail = () => {
               asChild
               variant="outline" 
               size="lg"
-              className="border-background text-background hover:bg-background hover:text-primary text-lg px-8 py-6 transition-spring button-press hover-lift"
+              className="border-background text-black hover:bg-background hover:text-primary text-lg px-8 py-6 transition-spring button-press hover-lift"
             >
               <Link to="/portfolio">
                 View Our Work

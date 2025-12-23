@@ -21,7 +21,7 @@ const Services = () => {
       icon: <Heart className="w-8 h-8 text-luxury" />,
       title: "Weddings",
       description: "Create your perfect day with our comprehensive wedding planning services, from intimate ceremonies to grand celebrations.",
-      features: ["Venue Selection", "Floral Design", "Photography Coordination", "Catering Management"],
+      features: ["Venue Selection", "Photography Coordination", "Catering Management"],
       link: "/services/weddings"
     },
     {

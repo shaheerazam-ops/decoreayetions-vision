@@ -47,6 +47,14 @@ const Portfolio = () => {
     { id: "anniversaries", label: "Anniversaries", icon: <Gift size={16} /> },
   ];
 
+  const categoryToServiceId: Record<string, string> = {
+    weddings: "weddings",
+    birthdays: "birthdays",
+    corporate: "corporate",
+    bridal: "bridal-showers",
+    anniversaries: "anniversaries",
+  };
+
   const portfolioItems = [
     {
       id: 1,
@@ -178,9 +186,12 @@ const Portfolio = () => {
                     </div>
                     <Button 
                       variant="outline" 
+                      asChild
                       className="w-full justify-between text-black hover:text-luxury-foreground hover:bg-luxury group transition-all"
                     >
-                      View Details <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                      <Link to={`/services/${categoryToServiceId[item.category] ?? ""}`}>
+                        View Details <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                      </Link>
                     </Button>
                   </CardContent>
                 </Card>

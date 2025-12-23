@@ -58,6 +58,29 @@ const Contact = () => {
   });
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
 
+  const openAuthDialog = (mode: "login" | "signup") => {
+    setAuthMode(mode);
+    setIsAuthDialogOpen(true);
+  };
+
+  const handleConsultationClick = () => {
+    if (initialLoading) return;
+
+    if (!user) {
+      toast({
+        title: "Create your account",
+        description: "Sign up to book a free consultation.",
+      });
+      openAuthDialog("signup");
+      return;
+    }
+
+    toast({
+      title: "Consultation requested",
+      description: "You're signed in. We’ll contact you in 1–2 business days.",
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -277,9 +300,17 @@ const Contact = () => {
             <Button
               size="lg"
               className="bg-luxury text-luxury-foreground hover:bg-luxury/90 shadow-luxury px-8"
-              onClick={() => setIsAuthDialogOpen(true)}
+              onClick={() => openAuthDialog("login")}
             >
-              Client Login / Sign Up
+              Client Login
+            </Button>
+            <Button
+              size="lg"
+              variant="secondary"
+              className="bg-background text-primary hover:bg-background/90 shadow-elegant px-8"
+              onClick={() => openAuthDialog("signup")}
+            >
+              Create Account
             </Button>
             <Button
               size="lg"
@@ -613,6 +644,7 @@ const Contact = () => {
                     variant="secondary"
                     size="lg"
                     className="w-full bg-background text-primary hover:bg-background/90"
+                    onClick={handleConsultationClick}
                   >
                     Book Free Consultation
                   </Button>
