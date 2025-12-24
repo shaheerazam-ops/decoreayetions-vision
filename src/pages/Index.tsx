@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import HeroSlider from "@/components/HeroSlider";
 import Footer from "@/components/Footer";
@@ -5,12 +7,23 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleSignUpClick = () => {
+    navigate("/contact", { state: { openAuth: "signup" } });
+  };
+
+  const handleLoginClick = () => {
+    navigate("/contact", { state: { openAuth: "login" } });
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
       
       {/* Hero Section with Image Slider */}
-      <HeroSlider />
+      <HeroSlider onSignUpClick={handleSignUpClick} onLoginClick={handleLoginClick} />
 
       {/* About Section */}
       <section className="py-20 bg-white">

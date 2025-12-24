@@ -133,10 +133,10 @@ const Portfolio = () => {
                 key={filter.id}
                 variant={activeFilter === filter.id ? "default" : "outline"}
                 onClick={() => setActiveFilter(filter.id)}
-                className={`flex items-center gap-2 transition-elegant ${
+                className={`flex items-center gap-2 transition-elegant font-medium ${
                   activeFilter === filter.id 
                     ? "bg-luxury text-luxury-foreground shadow-luxury" 
-                    : "border-luxury text-luxury hover:bg-luxury hover:text-luxury-foreground"
+                    : "border-luxury text-gray-700 hover:text-gray-900 hover:bg-luxury hover:text-luxury-foreground"
                 }`}
               >
                 {filter.icon}

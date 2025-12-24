@@ -1,9 +1,15 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Instagram, Facebook } from "lucide-react";
 import { Button } from "./ui/button";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const HeroSlider = () => {
+interface HeroSliderProps {
+  onSignUpClick?: () => void;
+  onLoginClick?: () => void;
+}
+
+const HeroSlider = ({ onSignUpClick, onLoginClick }: HeroSliderProps) => {
+  const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const heroImages = [
@@ -109,19 +115,31 @@ const HeroSlider = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
-              asChild
               size="lg"
+              onClick={() => {
+                if (onSignUpClick) {
+                  onSignUpClick();
+                } else {
+                  navigate("/contact", { state: { openAuth: "signup" } });
+                }
+              }}
               className="bg-white text-gray-900 hover:bg-gray-100 px-8 py-3 transition-transform transform hover:scale-105"
             >
-              <Link to="/services">Our Services</Link>
+              Sign Up
             </Button>
             <Button
-              asChild
               variant="outline"
               size="lg"
+              onClick={() => {
+                if (onLoginClick) {
+                  onLoginClick();
+                } else {
+                  navigate("/contact", { state: { openAuth: "login" } });
+                }
+              }}
               className="bg-white text-gray-900 hover:bg-gray-100 px-8 py-3 transition-transform transform hover:scale-105"
             >
-              <Link to="/portfolio">View Portfolio</Link>
+              Login
             </Button>
           </div>
 

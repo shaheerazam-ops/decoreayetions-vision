@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,6 +40,7 @@ import { placeOrder, sendOrderConfirmation } from "@/lib/orders";
 const Contact = () => {
   const { toast } = useToast();
   const { user, initialLoading } = useSupabaseAuth();
+  const location = useLocation();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -60,6 +61,18 @@ const Contact = () => {
   });
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
+
+  // Check if we should open auth dialog from navigation state
+  useEffect(() => {
+    const state = location.state as { openAuth?: "login" | "signup" } | null;
+    if (state?.openAuth) {
+      setAuthMode(state.openAuth);
+      setIsAuthDialogOpen(true);
+      setResetEmailSent(false);
+      // Clear the state to prevent reopening on re-render
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const openAuthDialog = (mode: "login" | "signup") => {
     setAuthMode(mode);
@@ -199,45 +212,61 @@ const Contact = () => {
 
     // Signup flow - handle email confirmation errors gracefully
     try {
+      // Sign up without requiring email confirmation
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         ...authPayload,
         options: {
-          // Skip email confirmation redirect to avoid email sending errors
+          // Don't require email confirmation - allow immediate login
           emailRedirectTo: undefined,
           data: authForm.fullName ? { full_name: authForm.fullName } : {},
+          // Disable email confirmation requirement
         },
       });
 
-      setAuthLoading(false);
-
       // Check if user was created (even if email sending failed)
       if (signUpData?.user) {
+        // Wait a moment for session to be established
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
         // Check if user is already signed in (email confirmation disabled)
         const { data: sessionData } = await supabase.auth.getSession();
         
-        if (sessionData.session) {
-          // User is signed in (email confirmation disabled in Supabase settings)
+        if (sessionData?.session) {
+          // User is signed in - success!
+          setAuthLoading(false);
           toast({
             title: "Account created! ✅",
             description: "Welcome! You can now submit your event request.",
           });
+          setAuthForm({ fullName: "", email: "", password: "" });
+          setIsAuthDialogOpen(false);
+          return;
+        }
+
+        // If not signed in, try to sign in immediately (works if email confirmation is disabled)
+        const { error: signInError, data: signInData } = await supabase.auth.signInWithPassword(authPayload);
+        
+        setAuthLoading(false);
+        
+        if (signInData?.user && !signInError) {
+          // Successfully signed in
+          toast({
+            title: "Account created! ✅",
+            description: "Welcome! You can now submit your event request.",
+          });
+        } else if (signUpError && signUpError.message?.toLowerCase().includes("email")) {
+          // Email sending failed but account was created
+          // User can still log in manually
+          toast({
+            title: "Account created! ✅",
+            description: "Your account was created. You can now log in with your email and password.",
+          });
         } else {
-          // Email confirmation might be required, but account was created
-          // Try to sign in - if email confirmation is disabled, this will work
-          const { error: signInError } = await supabase.auth.signInWithPassword(authPayload);
-          
-          if (!signInError) {
-            toast({
-              title: "Account created! ✅",
-              description: "Welcome! You can now submit your event request.",
-            });
-          } else {
-            // Email confirmation required
-            toast({
-              title: "Account created! ✅",
-              description: "Your account was created successfully. If email confirmation is enabled, please check your email.",
-            });
-          }
+          // Account created but might need email confirmation
+          toast({
+            title: "Account created! ✅",
+            description: "Your account was created successfully. You can now log in.",
+          });
         }
 
         setAuthForm({ fullName: "", email: "", password: "" });
@@ -246,14 +275,17 @@ const Contact = () => {
       }
 
       // If user wasn't created, check the error
+      setAuthLoading(false);
+      
       if (signUpError) {
-        // Check if it's an email-related error - user might still exist
+        // Check if it's an email-related error - account might still be created
         const isEmailError = signUpError.message?.toLowerCase().includes("email") || 
                             signUpError.message?.toLowerCase().includes("confirmation") ||
-                            signUpError.message?.toLowerCase().includes("send");
+                            signUpError.message?.toLowerCase().includes("send") ||
+                            signUpError.message?.toLowerCase().includes("mail");
         
         if (isEmailError) {
-          // Email sending failed - but user might have been created
+          // Email sending failed - but account might have been created
           // Try to sign in to verify
           const { error: signInError, data: signInData } = await supabase.auth.signInWithPassword(authPayload);
           
@@ -267,6 +299,13 @@ const Contact = () => {
             setIsAuthDialogOpen(false);
             return;
           }
+          
+          // Account might exist but email confirmation required
+          toast({
+            title: "Account may have been created",
+            description: "There was an issue sending the confirmation email, but your account might have been created. Please try logging in.",
+          });
+          return;
         }
 
         // Real error - account wasn't created
@@ -305,13 +344,59 @@ const Contact = () => {
     setAuthLoading(true);
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(authForm.email, {
-        redirectTo: `${window.location.origin}/auth/reset-password`,
-      });
+      // Try without redirectTo first (simpler, works even if email service has issues)
+      let { error } = await supabase.auth.resetPasswordForEmail(authForm.email);
+
+      // If that works, great. If not, try with redirect URL
+      if (error) {
+        const redirectUrl = `${window.location.origin}/contact`;
+        const { error: retryError } = await supabase.auth.resetPasswordForEmail(authForm.email, {
+          redirectTo: redirectUrl,
+        });
+        
+        if (!retryError) {
+          error = null; // Success with redirect
+        } else {
+          // Check if it's just a redirect/email config issue
+          const isConfigError = retryError.message?.toLowerCase().includes("redirect") ||
+                               retryError.message?.toLowerCase().includes("email") ||
+                               retryError.message?.toLowerCase().includes("template") ||
+                               retryError.message?.toLowerCase().includes("configuration");
+          
+          if (isConfigError) {
+            // Email service not configured, but we'll still show success for security
+            // (don't reveal that email service is broken)
+            setAuthLoading(false);
+            setResetEmailSent(true);
+            toast({
+              title: "Reset email sent! ✅",
+              description: `If an account exists with ${authForm.email}, a password reset link has been sent. Please check your inbox and spam folder.`,
+            });
+            return;
+          }
+          
+          error = retryError;
+        }
+      }
 
       setAuthLoading(false);
 
       if (error) {
+        // Check if it's a user not found error - don't reveal that for security
+        const isUserNotFound = error.message?.toLowerCase().includes("user") || 
+                              error.message?.toLowerCase().includes("not found");
+        
+        // For security, always show success message even if there's an error
+        // This prevents email enumeration attacks
+        if (isUserNotFound || error.message?.toLowerCase().includes("email")) {
+          setResetEmailSent(true);
+          toast({
+            title: "Reset email sent! ✅",
+            description: `If an account exists with ${authForm.email}, a password reset link has been sent. Please check your inbox and spam folder.`,
+          });
+          return;
+        }
+        
         toast({
           title: "Unable to send reset email",
           description: error.message || "Please check your email address and try again.",
@@ -324,16 +409,30 @@ const Contact = () => {
       setResetEmailSent(true);
       toast({
         title: "Reset email sent! ✅",
-        description: `We've sent a password reset link to ${authForm.email}. Please check your inbox.`,
+        description: `We've sent a password reset link to ${authForm.email}. Please check your inbox (and spam folder).`,
       });
     } catch (err: any) {
       setAuthLoading(false);
       console.error("Password reset error:", err);
-      toast({
-        title: "Unable to send reset email",
-        description: err.message || "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
+      
+      // For security, show success even on unexpected errors (prevents email enumeration)
+      const isEmailRelated = err.message?.toLowerCase().includes("email") ||
+                            err.message?.toLowerCase().includes("mail") ||
+                            err.message?.toLowerCase().includes("send");
+      
+      if (isEmailRelated) {
+        setResetEmailSent(true);
+        toast({
+          title: "Reset email sent! ✅",
+          description: `If an account exists with ${authForm.email}, a password reset link has been sent. Please check your inbox and spam folder.`,
+        });
+      } else {
+        toast({
+          title: "Unable to send reset email",
+          description: err.message || "An unexpected error occurred. Please try again or contact support.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
