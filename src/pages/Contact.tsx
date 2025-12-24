@@ -29,7 +29,8 @@ import {
   LogOut,
   ShieldCheck,
   UserPlus,
-  CircleUserRound
+  CircleUserRound,
+  CheckCircle2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -50,7 +51,7 @@ const Contact = () => {
     message: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const [authMode, setAuthMode] = useState<"login" | "signup" | "forgot-password">("login");
   const [authLoading, setAuthLoading] = useState(false);
   const [authForm, setAuthForm] = useState({
     fullName: "",
@@ -58,10 +59,12 @@ const Contact = () => {
     password: ""
   });
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
+  const [resetEmailSent, setResetEmailSent] = useState(false);
 
   const openAuthDialog = (mode: "login" | "signup") => {
     setAuthMode(mode);
     setIsAuthDialogOpen(true);
+    setResetEmailSent(false);
   };
 
   const handleConsultationClick = () => {
@@ -170,41 +173,168 @@ const Contact = () => {
       password: authForm.password,
     };
 
-    const emailRedirectTo =
-      typeof window !== "undefined" ? `${window.location.origin}/auth/callback` : undefined;
+    if (authMode === "login") {
+      const { error } = await supabase.auth.signInWithPassword(authPayload);
 
-    const { error } =
-      authMode === "login"
-        ? await supabase.auth.signInWithPassword(authPayload)
-        : await supabase.auth.signUp({
-            ...authPayload,
-            options: {
-              emailRedirectTo,
-              data: authForm.fullName ? { full_name: authForm.fullName } : {},
-            },
-          });
+      setAuthLoading(false);
 
-    setAuthLoading(false);
+      if (error) {
+        toast({
+          title: "Unable to log in",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
 
-    if (error) {
       toast({
-        title: authMode === "login" ? "Unable to log in" : "Unable to create account",
-        description: error.message,
+        title: "Welcome back!",
+        description: "You can now submit your event request.",
+      });
+
+      setAuthForm({ fullName: "", email: "", password: "" });
+      setIsAuthDialogOpen(false);
+      return;
+    }
+
+    // Signup flow - handle email confirmation errors gracefully
+    try {
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        ...authPayload,
+        options: {
+          // Skip email confirmation redirect to avoid email sending errors
+          emailRedirectTo: undefined,
+          data: authForm.fullName ? { full_name: authForm.fullName } : {},
+        },
+      });
+
+      setAuthLoading(false);
+
+      // Check if user was created (even if email sending failed)
+      if (signUpData?.user) {
+        // Check if user is already signed in (email confirmation disabled)
+        const { data: sessionData } = await supabase.auth.getSession();
+        
+        if (sessionData.session) {
+          // User is signed in (email confirmation disabled in Supabase settings)
+          toast({
+            title: "Account created! ✅",
+            description: "Welcome! You can now submit your event request.",
+          });
+        } else {
+          // Email confirmation might be required, but account was created
+          // Try to sign in - if email confirmation is disabled, this will work
+          const { error: signInError } = await supabase.auth.signInWithPassword(authPayload);
+          
+          if (!signInError) {
+            toast({
+              title: "Account created! ✅",
+              description: "Welcome! You can now submit your event request.",
+            });
+          } else {
+            // Email confirmation required
+            toast({
+              title: "Account created! ✅",
+              description: "Your account was created successfully. If email confirmation is enabled, please check your email.",
+            });
+          }
+        }
+
+        setAuthForm({ fullName: "", email: "", password: "" });
+        setIsAuthDialogOpen(false);
+        return;
+      }
+
+      // If user wasn't created, check the error
+      if (signUpError) {
+        // Check if it's an email-related error - user might still exist
+        const isEmailError = signUpError.message?.toLowerCase().includes("email") || 
+                            signUpError.message?.toLowerCase().includes("confirmation") ||
+                            signUpError.message?.toLowerCase().includes("send");
+        
+        if (isEmailError) {
+          // Email sending failed - but user might have been created
+          // Try to sign in to verify
+          const { error: signInError, data: signInData } = await supabase.auth.signInWithPassword(authPayload);
+          
+          if (signInData?.user && !signInError) {
+            // Account exists and we can sign in - success!
+            toast({
+              title: "Account created! ✅",
+              description: "Welcome! You can now submit your event request.",
+            });
+            setAuthForm({ fullName: "", email: "", password: "" });
+            setIsAuthDialogOpen(false);
+            return;
+          }
+        }
+
+        // Real error - account wasn't created
+        toast({
+          title: "Unable to create account",
+          description: signUpError.message || "Please try again. Make sure your email is valid and password is at least 6 characters.",
+          variant: "destructive",
+        });
+        return;
+      }
+    } catch (err: any) {
+      // Catch any unexpected errors
+      console.error("Signup error:", err);
+      setAuthLoading(false);
+      toast({
+        title: "Unable to create account",
+        description: err.message || "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!authForm.email) {
+      toast({
+        title: "Email required",
+        description: "Please enter your email address to reset your password.",
         variant: "destructive",
       });
       return;
     }
 
-    toast({
-      title: authMode === "login" ? "Welcome back!" : "Account created",
-      description:
-        authMode === "login"
-          ? "You can now submit your event request."
-          : "Please verify your email (if required) and then submit your request.",
-    });
+    setAuthLoading(true);
 
-    setAuthForm({ fullName: "", email: "", password: "" });
-    setIsAuthDialogOpen(false);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(authForm.email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      });
+
+      setAuthLoading(false);
+
+      if (error) {
+        toast({
+          title: "Unable to send reset email",
+          description: error.message || "Please check your email address and try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Success - show confirmation
+      setResetEmailSent(true);
+      toast({
+        title: "Reset email sent! ✅",
+        description: `We've sent a password reset link to ${authForm.email}. Please check your inbox.`,
+      });
+    } catch (err: any) {
+      setAuthLoading(false);
+      console.error("Password reset error:", err);
+      toast({
+        title: "Unable to send reset email",
+        description: err.message || "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleSignOut = async () => {
@@ -749,103 +879,198 @@ const Contact = () => {
           if (!open) {
             setAuthMode("login");
             setAuthForm({ fullName: "", email: "", password: "" });
+            setResetEmailSent(false);
           }
         }}
       >
         <DialogContent className="sm:max-w-md">
-          <form onSubmit={handleAuthSubmit} className="space-y-5">
-            <DialogHeader>
-              <DialogTitle className="text-2xl text-primary">
-                {authMode === "login" ? "Welcome Back" : "Create Your Account"}
-              </DialogTitle>
-              <DialogDescription>
-                {authMode === "login"
-                  ? "Enter your credentials to access saved requests and proposals."
-                  : "Create a secure portal to manage your events and receive proposals."}
-                <button
-                  type="button"
-                  className="ml-1 font-medium text-luxury hover:underline"
-                  onClick={() => setAuthMode((prev) => (prev === "login" ? "signup" : "login"))}
-                >
-                  {authMode === "login" ? "Need an account?" : "Already registered?"}
-                </button>
-              </DialogDescription>
-            </DialogHeader>
+          {authMode === "forgot-password" ? (
+            // Forgot Password Form
+            <form onSubmit={handleForgotPassword} className="space-y-5">
+              <DialogHeader>
+                <DialogTitle className="text-2xl text-primary">
+                  Reset Your Password
+                </DialogTitle>
+                <DialogDescription>
+                  Enter your email address and we'll send you a link to reset your password.
+                </DialogDescription>
+              </DialogHeader>
 
-            {authMode === "signup" && (
+              {resetEmailSent ? (
+                <div className="space-y-4">
+                  <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-center">
+                    <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto mb-2" />
+                    <h3 className="font-semibold text-green-900 mb-1">Email Sent!</h3>
+                    <p className="text-sm text-green-700">
+                      We've sent a password reset link to <strong>{authForm.email}</strong>. 
+                      Please check your inbox and click the link to reset your password.
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => {
+                      setAuthMode("login");
+                      setResetEmailSent(false);
+                      setAuthForm({ ...authForm, email: "" });
+                    }}
+                  >
+                    Back to Login
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="resetEmail">Email Address</Label>
+                    <Input
+                      id="resetEmail"
+                      type="email"
+                      value={authForm.email}
+                      onChange={(e) =>
+                        setAuthForm((prev) => ({
+                          ...prev,
+                          email: e.target.value,
+                        }))
+                      }
+                      placeholder="you@example.com"
+                      required
+                    />
+                  </div>
+
+                  <DialogFooter className="flex flex-col gap-3">
+                    <Button
+                      type="submit"
+                      className="w-full bg-luxury text-luxury-foreground hover:bg-luxury/90 shadow-luxury"
+                      disabled={authLoading}
+                    >
+                      {authLoading ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                        <Mail className="mr-2 h-4 w-4" />
+                      )}
+                      Send Reset Link
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className="w-full"
+                      onClick={() => {
+                        setAuthMode("login");
+                        setResetEmailSent(false);
+                      }}
+                    >
+                      Back to Login
+                    </Button>
+                  </DialogFooter>
+                </>
+              )}
+            </form>
+          ) : (
+            // Login/Signup Form
+            <form onSubmit={handleAuthSubmit} className="space-y-5">
+              <DialogHeader>
+                <DialogTitle className="text-2xl text-primary">
+                  {authMode === "login" ? "Welcome Back" : "Create Your Account"}
+                </DialogTitle>
+                <DialogDescription>
+                  {authMode === "login"
+                    ? "Enter your credentials to access saved requests and proposals."
+                    : "Create a secure portal to manage your events and receive proposals."}
+                  <button
+                    type="button"
+                    className="ml-1 font-medium text-gray-700 hover:text-gray-900 hover:underline"
+                    onClick={() => setAuthMode((prev) => (prev === "login" ? "signup" : "login"))}
+                  >
+                    {authMode === "login" ? "Need an account?" : "Already registered?"}
+                  </button>
+                </DialogDescription>
+              </DialogHeader>
+
+              {authMode === "signup" && (
+                <div className="space-y-2">
+                  <Label htmlFor="authFullName">Full Name</Label>
+                  <Input
+                    id="authFullName"
+                    value={authForm.fullName}
+                    onChange={(e) =>
+                      setAuthForm((prev) => ({
+                        ...prev,
+                        fullName: e.target.value,
+                      }))
+                    }
+                    placeholder="Your name"
+                    minLength={2}
+                    required
+                  />
+                </div>
+              )}
+
               <div className="space-y-2">
-                <Label htmlFor="authFullName">Full Name</Label>
+                <Label htmlFor="authEmail">Email</Label>
                 <Input
-                  id="authFullName"
-                  value={authForm.fullName}
+                  id="authEmail"
+                  type="email"
+                  value={authForm.email}
                   onChange={(e) =>
                     setAuthForm((prev) => ({
                       ...prev,
-                      fullName: e.target.value,
+                      email: e.target.value,
                     }))
                   }
-                  placeholder="Your name"
-                  minLength={2}
+                  placeholder="you@example.com"
                   required
                 />
               </div>
-            )}
 
-            <div className="space-y-2">
-              <Label htmlFor="authEmail">Email</Label>
-              <Input
-                id="authEmail"
-                type="email"
-                value={authForm.email}
-                onChange={(e) =>
-                  setAuthForm((prev) => ({
-                    ...prev,
-                    email: e.target.value,
-                  }))
-                }
-                placeholder="you@example.com"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="authPassword">Password</Label>
-              <Input
-                id="authPassword"
-                type="password"
-                value={authForm.password}
-                onChange={(e) =>
-                  setAuthForm((prev) => ({
-                    ...prev,
-                    password: e.target.value,
-                  }))
-                }
-                placeholder="Enter a secure password"
-                minLength={6}
-                required
-              />
-            </div>
-
-            <DialogFooter className="flex flex-col gap-3">
-              <Button
-                type="submit"
-                className="w-full bg-luxury text-luxury-foreground hover:bg-luxury/90 shadow-luxury"
-                disabled={authLoading}
-              >
-                {authLoading ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : authMode === "login" ? (
-                  <LogIn className="mr-2 h-4 w-4" />
-                ) : (
-                  <UserPlus className="mr-2 h-4 w-4" />
+              <div className="space-y-2">
+                <Label htmlFor="authPassword">Password</Label>
+                <Input
+                  id="authPassword"
+                  type="password"
+                  value={authForm.password}
+                  onChange={(e) =>
+                    setAuthForm((prev) => ({
+                      ...prev,
+                      password: e.target.value,
+                    }))
+                  }
+                  placeholder="Enter a secure password"
+                  minLength={6}
+                  required
+                />
+                {authMode === "login" && (
+                  <button
+                    type="button"
+                    onClick={() => setAuthMode("forgot-password")}
+                    className="text-sm text-gray-700 hover:text-gray-900 hover:underline text-right w-full mt-1 font-medium"
+                  >
+                    Forgot your password?
+                  </button>
                 )}
-                {authMode === "login" ? "Log In" : "Create Account"}
-              </Button>
-              <p className="text-center text-xs text-muted-foreground">
-                By continuing, you agree to our terms and confirm you’re authorized to share these event details.
-              </p>
-            </DialogFooter>
-          </form>
+              </div>
+
+              <DialogFooter className="flex flex-col gap-3">
+                <Button
+                  type="submit"
+                  className="w-full bg-luxury text-luxury-foreground hover:bg-luxury/90 shadow-luxury"
+                  disabled={authLoading}
+                >
+                  {authLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : authMode === "login" ? (
+                    <LogIn className="mr-2 h-4 w-4" />
+                  ) : (
+                    <UserPlus className="mr-2 h-4 w-4" />
+                  )}
+                  {authMode === "login" ? "Log In" : "Create Account"}
+                </Button>
+                <p className="text-center text-xs text-muted-foreground">
+                  By continuing, you agree to our terms and confirm you're authorized to share these event details.
+                </p>
+              </DialogFooter>
+            </form>
+          )}
         </DialogContent>
       </Dialog>
     </div>
