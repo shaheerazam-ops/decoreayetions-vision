@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -94,6 +95,16 @@ const Contact = () => {
       return;
     }
 
+    // Validate required fields
+    if (!formData.name || !formData.email || !formData.eventType || !formData.message) {
+      toast({
+        title: "Missing information",
+        description: "Please fill in all required fields (Name, Email, Event Type, and Message).",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -102,22 +113,25 @@ const Contact = () => {
         name: formData.name,
         email: formData.email,
         phone: formData.phone || null,
-        event_type: formData.eventType || "unspecified",
+        event_type: formData.eventType,
         event_date: formData.eventDate || null,
         guests: formData.guests || null,
         budget: formData.budget || null,
         message: formData.message,
       });
 
-      if (user.email) {
+      // Send confirmation (non-blocking - won't fail if notifications table doesn't exist)
+      if (newOrder.id && user.email) {
         await sendOrderConfirmation(newOrder.id, user.email);
       }
 
+      // Always show success message after order is created
       toast({
-        title: "Message Sent!",
-        description: "Thank you for contacting us. We'll get back to you within 24 hours.",
+        title: "Order Received! ✅",
+        description: `Thank you, ${formData.name}! Your event request has been saved. We'll contact you at ${formData.email} within 24 hours. You can view all your orders in the "My Orders" section.`,
       });
 
+      // Reset form after successful submission
       setFormData({
         name: "",
         email: "",
@@ -131,8 +145,8 @@ const Contact = () => {
     } catch (error: any) {
       console.error("Failed to save order", error);
       toast({
-        title: "Something went wrong",
-        description: error.message ?? "We could not save your request. Please try again.",
+        title: "Unable to submit request",
+        description: error.message || "We could not save your request. Please check your connection and try again.",
         variant: "destructive",
       });
     } finally {

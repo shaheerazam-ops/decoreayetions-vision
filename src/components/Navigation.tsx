@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Menu, X, Phone } from "lucide-react";
+import { Menu, X, Phone, FileText } from "lucide-react";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { user } = useSupabaseAuth();
 
   const navItems = [
     { name: "Home", path: "/" },
@@ -43,6 +45,17 @@ const Navigation = () => {
                 {item.name}
               </Link>
             ))}
+            {user && (
+              <Link
+                to="/my-orders"
+                className={`text-sm uppercase tracking-wider font-medium transition-colors flex items-center gap-1 ${
+                  isActive("/my-orders") ? "text-gray-900 border-b-2 border-gray-900" : "text-gray-600 hover:text-gray-900"
+                } pb-1`}
+              >
+                <FileText size={14} />
+                My Orders
+              </Link>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -74,6 +87,18 @@ const Navigation = () => {
                   {item.name}
                 </Link>
               ))}
+              {user && (
+                <Link
+                  to="/my-orders"
+                  className={`block px-3 py-2 text-sm uppercase tracking-wider transition-colors flex items-center gap-2 ${
+                    isActive("/my-orders") ? "text-gray-900 font-medium" : "text-gray-600 hover:text-gray-900"
+                  }`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  <FileText size={14} />
+                  My Orders
+                </Link>
+              )}
             </div>
           </div>
         )}

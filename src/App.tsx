@@ -11,6 +11,7 @@ import Portfolio from "./pages/Portfolio";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Testimonials from "./pages/Testimonials";
+import MyOrders from "./pages/MyOrders";
 import NotFound from "./pages/NotFound";
 
 
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/testimonials" element={<Testimonials />} />
+          <Route path="/my-orders" element={<MyOrders />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
