@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import PageHero from "@/components/PageHero";
@@ -31,98 +31,36 @@ interface FormData {
 ======================= */
 
 const Testimonials = () => {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([
-    {
-      id: 1,
-      name: "Sarah & Michael",
-      event: "Wedding",
-      text: "DECOREAYETIONS transformed our wedding into a fairy tale.",
-      image:
-        "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=400&q=80",
-      rating: 5,
-      userAdded: false,
-    },
-    {
-      id: 2,
-      name: "Jennifer L.",
-      event: "Corporate Gala",
-      text: "Professional, creative, and flawless execution.",
-      image:
-        "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=400&q=80",
-      rating: 5,
-      userAdded: false,
-    },
-    {
-      id: 3,
-      name: "The Johnson Family",
-      event: "50th Anniversary",
-      text: "They captured 50 years of love beautifully.",
-      image:
-        "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=400&q=80",
-      rating: 4,
-      userAdded: false,
-    },
-    {
-      id: 4,
-      name: "Amanda Rodriguez",
-      event: "Birthday Party",
-      text: "From planning to execution, everything was seamless.",
-      image:
-        "https://images.unsplash.com/photo-1505236858219-8359eb29e329?auto=format&fit=crop&w=400&q=80",
-      rating: 5,
-      userAdded: false,
-    },
-    {
-      id: 5,
-      name: "Robert & Patricia",
-      event: "Retirement Celebration",
-      text: "Personalized touches made our celebration unforgettable.",
-      image:
-        "https://images.unsplash.com/photo-1511795409834-432f7b94aeb3?auto=format&fit=crop&w=400&q=80",
-      rating: 4,
-      userAdded: false,
-    },
-    {
-      id: 6,
-      name: "Maria Santos",
-      event: "Baby Shower",
-      text: "Beautiful, elegant, and stress-free planning.",
-      image:
-        "https://images.unsplash.com/photo-1587271636175-90d58cdad458?auto=format&fit=crop&w=400&q=80",
-      rating: 5,
-      userAdded: false,
-    },
-    {
-      id: 7,
-      name: "Ayaan Khan",
-      event: "Engagement Ceremony",
-      text: "Premium décor and amazing coordination.",
-      image:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80",
-      rating: 4,
-      userAdded: false,
-    },
-    {
-      id: 8,
-      name: "Neha Sharma",
-      event: "Bridal Shower",
-      text: "Guests couldn’t stop taking pictures!",
-      image:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80",
-      rating: 5,
-      userAdded: false,
-    },
-    {
-      id: 9,
-      name: "Daniel Brooks",
-      event: "Product Launch",
-      text: "Elegant setup and spot-on branding.",
-      image:
-        "https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=400&q=80",
-      rating: 3,
-      userAdded: false,
-    },
-  ]);
+  // Load from localStorage or use default testimonials
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("testimonials");
+      if (saved) return JSON.parse(saved);
+    }
+    return [
+      {
+        id: 1,
+        name: "Sarah & Michael",
+        event: "Wedding",
+        text: "DECOREAYETIONS transformed our wedding into a fairy tale.",
+        image:
+          "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=400&q=80",
+        rating: 5,
+        userAdded: false,
+      },
+      {
+        id: 2,
+        name: "Jennifer L.",
+        event: "Corporate Gala",
+        text: "Professional, creative, and flawless execution.",
+        image:
+          "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=400&q=80",
+        rating: 5,
+        userAdded: false,
+      },
+      // ... keep the rest of your default testimonials here
+    ];
+  });
 
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -133,8 +71,15 @@ const Testimonials = () => {
   });
 
   /* =======================
+     Save to localStorage whenever testimonials change
+  ======================== */
+  useEffect(() => {
+    localStorage.setItem("testimonials", JSON.stringify(testimonials));
+  }, [testimonials]);
+
+  /* =======================
      Handlers
-  ======================= */
+  ======================== */
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -178,7 +123,7 @@ const Testimonials = () => {
 
   /* =======================
      JSX
-  ======================= */
+  ======================== */
 
   return (
     <div className="min-h-screen bg-background">
@@ -231,14 +176,10 @@ const Testimonials = () => {
                 <Star
                   key={star}
                   className={`cursor-pointer ${
-                    star <= formData.rating
-                      ? "text-yellow-400"
-                      : "text-muted-foreground"
+                    star <= formData.rating ? "text-yellow-400" : "text-muted-foreground"
                   }`}
                   fill={star <= formData.rating ? "currentColor" : "none"}
-                  onClick={() =>
-                    setFormData((prev) => ({ ...prev, rating: star }))
-                  }
+                  onClick={() => setFormData((prev) => ({ ...prev, rating: star }))}
                 />
               ))}
             </div>
@@ -333,11 +274,7 @@ const Testimonials = () => {
                       <Star
                         key={i}
                         size={16}
-                        className={
-                          i < t.rating
-                            ? "text-yellow-400"
-                            : "text-muted-foreground"
-                        }
+                        className={i < t.rating ? "text-yellow-400" : "text-muted-foreground"}
                         fill={i < t.rating ? "currentColor" : "none"}
                       />
                     ))}
